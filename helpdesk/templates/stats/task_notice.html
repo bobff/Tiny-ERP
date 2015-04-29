@@ -1,0 +1,95 @@
+<style class="fox_global_style">
+    div.fox_html_content { line-height: 1.5; }
+    div.fox_html_content { 
+        font-size: 10.5pt; 
+        font-family: 微软雅黑; 
+        color: rgb(0, 0, 0); 
+        line-height: 1.5; 
+    }
+</style> 
+<div style="text-align: center;">
+    <b><span></span>HelpDesk通知</b>
+</div>
+<div style="text-align: left;">
+    <br>
+</div>
+<div style="text-align: left;">您好：</div>
+<div style="text-align: left;">
+    <span style="background-color: rgba(0, 0, 0, 0);">
+        &nbsp; &nbsp; {{o.task.operator}} 已经对申请 {{o.uuid}} 进行了处理。
+    </span>
+</div>
+<div style="text-align: left;">
+<span style="background-color: rgba(0, 0, 0, 0);"><br></span>
+</div> 
+
+<table align="center" border=1>
+    <tr>
+        <th>UUID</th>
+        <td colspan="3"><a href="http://{{request.META.HTTP_HOST}}{{o.link}}">{{o.uuid}}</a></td>
+    </tr>
+    <tr>
+        <th>姓名</th>
+        <td colspan="3">{{o.name}}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td colspan="3">{{o.email}}</td>
+    </tr>
+    <tr>
+        <th>部门</th>
+        <td colspan="3">{{o.get_department}}</td>
+    </tr>
+    <tr>
+        <th>内容</th>
+        <td colspan="3">{{o.content|linebreaksbr|default_if_none:''}}</td>
+    </tr>
+    {%if o.status == '1'%}
+    <tr>
+        <th>驳回理由</th>
+        <td colspan="3">{{o.status_remark|linebreaksbr|default_if_none:''}}</td>
+    </tr>
+    {%endif%}
+{%if o.task_set.all.count > 0%}
+    <tr>
+        <th width="20%">执行人</th>
+        <th width="20%">联系方式</th>
+        <th width="20%">处理结果</th>
+        <th>备注</th>
+    </tr>
+    {%for a in o.task_set.all%}
+    <tr>
+        <td>
+            {{a.operator}}
+        </td>
+        <td>
+            {{a.operator_data.email}} 
+            {{a.operator_data.phone|default_if_none:''}}
+            {{a.operator_data.mobile|default_if_none:''}}
+        </td>
+        <td>
+            {{a.get_result}}
+        </td>
+        <td>
+            {{a.operate_remark|linebreaksbr|default_if_none:''}}
+        </td>
+    </tr>
+    {%endfor%}
+{%endif%}
+</table>
+<br/>
+
+{%if o.status == '3'%}
+
+<span align="center">请对本次服务做出评价</span>
+<table align="center">
+    <tr>
+        {%for e in o.evaluatelist%}
+    <td><a href="http://{{request.META.HTTP_HOST}}{{o.evaluatelink}}{{e.0}}">{{e.1}}</a></td>
+    {%endfor%}
+    </tr>
+</table>
+{%endif%}
+注：如果点击链接不能正常跳转，请手工复制如下地址进行查询：<br/>
+http://{{request.META.HTTP_HOST}}{{o.link}}
+<br/>

@@ -1,0 +1,31 @@
+{%extends 'apply/task_base.html'%}
+{%block content%}
+
+    <table class="table">
+        <tr>
+            <th>姓名</th>
+            <th>Email</th>
+            <th>类型</th>
+            <th>申请时间</th>
+            <th></th>
+        </tr>
+    {%for a in p.object_list %}
+    <tr>
+        <td>{{a.uuid.name}}</td>
+        <td>{{a.uuid.email}}</td>
+        <td>{{a.get_operator_duty}}</td>
+        <td>{{a.uuid.apply_time|date:"Y-m-d H:i:s"}}</td>
+        <td><button class="btn btn-xs btn-info" onclick="javascript:window.location.href='/helpdesk/{{apply_category}}/task/view?id={{a.pk}}'">查看</button></td>
+    </tr>
+
+    {%endfor%}
+
+    </table>
+    {%include 'include/page.html'%} 
+
+<script type="text/javascript">
+    $(function(){
+        $("#third_task").attr('class', 'active');
+    })
+</script>
+{%endblock content%}

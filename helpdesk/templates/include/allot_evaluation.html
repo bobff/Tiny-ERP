@@ -1,0 +1,20 @@
+{%if app.status == '3' or app.status == '4'%}
+<div class="form-group">
+    <label for="content"  class="col-sm-2 control-label">用户评价</label>
+    <div class="col-sm-10" >
+    <span class="form-control" style="height:100%">
+    {{app.get_evaluation}}
+    </span>
+    </div>
+</div>
+{%if app.evaluate_content%}
+<div class="form-group">
+    <label for="content"  class="col-sm-2 control-label">用户意见</label>
+    <div class="col-sm-10" >
+    <span class="form-control" style="height:100%">
+    {{app.evaluate_content}}
+    </span>
+    </div>
+</div>
+{%endif%}
+{%endif%}

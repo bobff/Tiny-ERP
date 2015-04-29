@@ -1,0 +1,23 @@
+{%extends 'base.html'%}
+{% block main %}
+<div class="row">
+    <div class="col-md-1 col-sm-1">
+        <div class="sidebar">
+            <ul class="nav nav-sidebar">
+            {%for c in apply_categories%}
+                <li id="second_{{c.short_tag}}" style="width:150%"><a href="/helpdesk/{{c.short_tag}}/task" class="active">{{c.name}} <span style="font-size: 10px;margin-left:3px;margin-top:2px"  id="span_undo_{{c.short_tag}}" class="badge"></span></a></li>
+            {%endfor%}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-11 col-sm-11">
+    {%block right%}
+    {%endblock right%}
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#first_task").attr('class', 'active');
+    })
+</script>
+{%endblock main%}

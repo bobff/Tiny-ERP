@@ -1,0 +1,29 @@
+{%extends 'base.html'%}
+{% block main %}
+<div class="row">
+    <div class="col-md-2 col-sm-2">
+    </div>
+
+    <div class="col-md-8 col-sm-8">
+        在提交评价【{{ename}}】 的同时，请留下您宝贵的意见：
+
+        <form role="form"  class="form-horizontal"  method="post" action="">
+        {% csrf_token %}
+        <input name="uuid" value="{{uuid}}" type="hidden" />
+        <input name="e" value="{{e}}" type="hidden" />
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <textarea required  class="form-control" name="content" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button style="float:right" class="btn btn-primary" onclick="">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+     <div class="col-md-2 col-sm-2">
+    </div>
+</div>
+{% endblock main %}

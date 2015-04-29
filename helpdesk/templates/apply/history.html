@@ -1,0 +1,60 @@
+{#申请者界面的历史记录， 用户通过该界面查看本部门的申请历史， 各种类别的申请都在这个页面显示#}
+{%extends 'apply/apply_base.html'%}
+{%block content%}
+
+     <form role="form"  class="form-horizontal"  method="get" action="">
+        <div class="input-group">
+            <span class="input-group-addon">姓名</span>
+            <input type="text" class="form-control"name="name" value="{{request.GET.name}}" />
+            <span class="input-group-addon">Email</span>
+            <input type="text" class="form-control" name="email" value="{{request.GET.email}}" />
+            <span class="input-group-addon">状态</span>
+            <select name="status" class="form-control" >
+                <option value="">--</option>
+                {%for s in statuslist.items%}
+                <option value="{{s.0}}" {%if request.GET.status == s.0%}selected{%endif%}>{{s.1}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon"></span>
+            <input style="color: #fff;background-color: #3071a9;border-color: #285e8e;" type="submit" class="form-control"class="btn btn-primary" value="筛选"/>
+            <span class="input-group-addon"></span>
+            <input type="button" class="form-control" class="btn btn-primary" value="重置" onclick="javascript:window.location.href='{{request.path}}'" />
+        </div>
+     </form>
+    <table class="table">
+        <tr>
+            <th>UUID</th>
+            <th>姓名</th>
+            <th>Email</th>
+            <th>申请时间</th>
+            <th>申请类别</th>
+            <th>状态</th>
+            <th></th>
+        </tr>
+        {%for a in p.object_list%}
+        <tr>
+            <td>{{a.uuid}}</td>
+            <td>{{a.name}}</td>
+            <td>{{a.email}}</td>
+            <td>{{a.apply_time|date:"Y-m-d H:i:s"}}</td>
+            <td>{{a.get_category}}</td>
+            <td>{{a.get_status}}</td>
+           
+            <td rowspan="1"><button onclick="javascript:window.location.href='/helpdesk/apply/query?uuid={{a.uuid}}'" class="btn btn-info btn-xs">查看</button></td>
+        </tr>
+        {%endfor%}
+
+    </table>
+
+    {#导入页码#}
+    {%include 'include/page.html'%}
+    
+  
+{#当前页面所属的以及菜单高亮#}  
+<script type="text/javascript">
+  $(function(){
+     $("#third_history").attr('class', 'active');
+  })
+</script>
+
+{%endblock content%}

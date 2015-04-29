@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=app_label %}">{{ app_label|capfirst|escape }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {% trans 'Delete multiple objects' %}
+</div>
+{% endblock %}
+
+{% block content %}
+    <p>您已选择 {{queryset_len}} 条记录。</p>
+    <form action="" method="post">{% csrf_token %}
+    <div>
+    {% for obj in queryset %}
+    <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
+    {% endfor %}
+    <p>请选择导出类型：<input type="radio" name="export_type" value="csv" checked="true" /> CSV </p>
+    <p>请选择需要导出的字段，可按Ctrl多选，不选则全部导出：</p>
+    <select multiple="true" name="export_field">
+        {%for f in fields%}
+        <option value="{{f.name}}">{{f.verbose_name}}</option>
+        {%endfor%}
+    </select><br>
+    <input type="hidden" name="action" value="{{action}}" />
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="确定导出" />
+    </div>
+    </form>
+{% endblock %}

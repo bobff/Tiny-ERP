@@ -1,0 +1,10 @@
+{%extends 'apply/apply_base.html'%}
+{%block main%}
+        <h2 align="center">提交成功</h1>
+        <p>本次申请的UUID为 <a href="/helpdesk/apply/query?uuid={{uuid}}">{{uuid}}</a> 您可以通过此UUID查询处理进度。</p>
+<script type="text/javascript">
+    $(function(){
+        $("#second_{{apply_category}}").attr('class','active');
+    })
+</script>
+{%endblock main%}

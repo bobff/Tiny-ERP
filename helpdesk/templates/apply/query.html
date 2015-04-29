@@ -1,0 +1,141 @@
+{#申请查询，根据申请类别不差异indlude不同的info.html,显示相应申请的内容#}
+{%extends 'apply/apply_base.html'%}
+{%block content%}
+    <form  role="form"  class="form-horizontal"  method="get">
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">UUID</label>
+            <div class="col-sm-6">
+                <input type="text" id="uuid" class="form-control" name='uuid' value="{{uuid}}">
+            </div>
+            <input type="submit" class="col-sm-2 btn btn-primary" value="查询" onclick ="this.value='正在查询...';"/>
+        </div>
+    </form>
+        
+        {%if result%}
+        <p align="center">{{result}}</p>
+        {%endif%}
+
+        <div role="form" class="form-horizontal" >
+
+        {%if apply_info_template%}
+         {%include apply_info_template%}
+        {%endif%}
+        
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">申请类别</label>
+            <div class="col-sm-10">
+                <span class="form-control" >{{app.category}}</span>
+            </div>
+        </div>
+        
+        {%if app%}
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">状态</label>
+            <div class="col-sm-10">
+                <span class="form-control" >{{app.get_status}}</span>
+            </div>
+        </div>
+
+        {%if app.status_remark%}
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">状态说明</label>
+            <div class="col-sm-9">
+                <span class="form-control"  style="height:100%">{{app.status_remark|linebreaksbr}}</span>
+            </div>
+        </div>
+        {%endif%}
+        {%endif%}
+            
+            {%if task.count > 0%}
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">处理情况</label>
+                <div class="col-sm-9">
+                    <table class="table">
+                            <tr>
+                                <th width="10%">类型</th>
+                                <th width="10%">执行人</th>
+                                <th width="20%">联系方式</th>
+                                <th width="10%">处理状态</th>
+                                <th width="">备注</th>
+                            </tr>                    
+                            {%for a in task%}
+                            <tr>
+                                <td>{{a.get_operator_duty}}</td>
+                                <td>{{a.operator}} </td>
+                                <td>{{a.operator_data.email|default_if_none:''}} 
+                                {{a.operator_data.phone|default_if_none:''}} 
+                                {{a.operator_data.mobile|default_if_none:''}}</td>
+                                <td>{{a.get_result}}</td>
+                                <td>{{a.operate_remark|default_if_none:''|linebreaksbr}}</td>
+                        {%endfor%}
+                        </table>
+                </div>
+                
+            </div>
+            {%endif%}
+
+
+        {%if application == 'GeneralApplication'%}
+        <div class="form-group" id="append_btn">
+                <label for="" class="col-sm-2 control-label"></label>
+                <div class="col-sm-9">
+                    <button class="btn btn-primary" onclick="append()">追加申请</button>
+                </div>
+            </div>
+            
+            <form method="post" action="/helpdesk/general/append" id="append_form" onsubmit ="getElementById('apply_btn').disabled=true;getElementById('apply_btn').value='正在提交...';return true;">
+            <legend>追加</legend>
+            {% csrf_token %}
+            <input name="application" value="{{app.pk}}" type="hidden">
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">姓名</label>
+                <div class="col-sm-9">
+                    <input required type="text" id="name" class="form-control" placeholder="" name='name' value="{{app.name}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label">内容</label>
+                <div class="col-sm-9">
+                    <textarea required id="name" class="form-control" name='content' rows="20"></textarea>
+                </div>
+            </div>
+             <div class="form-group">
+                <label for="content" class="col-sm-2 control-label"></label>
+                <div class="col-sm-9">
+                    <input id="apply_btn" type="submit" class="btn btn-primary" value="提交" />
+                    
+                </div>
+            </div>
+            </form>
+            {%endif%}
+
+        {%if application == 'VmApplication'%}
+        
+            <div class="form-group" id="append_btn">
+                <label for="" class="col-sm-2 control-label"></label>
+                <div class="col-sm-9">
+                    <button class="btn btn-primary" onclick="javascript:window.location.href='/helpdesk/vm/table?uuid={{app.uuid}}'">打印申请表</button>
+                </div>
+            </div>
+        {%endif%}
+
+        </div>
+
+        
+        <br>
+<script type="text/javascript">
+    $(function(){
+        $("#third_query").attr('class','active');
+        $("#append_form").hide();
+    });
+    function append() {
+        $("#append_btn").hide();
+        $("#append_form").show();
+    }
+</script>
+<script type="text/javascript">
+  $(function(){
+     $("#third_query").attr('class', 'active');
+  })
+</script>
+{%endblock content%}

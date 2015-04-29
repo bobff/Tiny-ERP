@@ -1,0 +1,50 @@
+{%extends 'base.html'%}
+{% block main %}
+
+<form  method="get" action="">
+    <div align="center">
+    <input class="form-control" type="text" id="q"  name='q' value="{{q}}" style="display:inline;height:34px;width:400px">
+    <input class="input-group-addon" type="checkbox" name="r">
+    <input type="submit" class="btn btn-primary" value="搜索" style="width:150px" onclick ="this.value='正在搜索...';"/>
+        </div>
+     </form>
+
+    {%for item in res.items%}
+    <br>
+    <h4>{{item.0}}</h4> 
+    <table border="1" width="{{item.1.table_width}}px">
+        <tr>
+            {%for field in item.1.fields%}<th width="{{field.1}}px">{{field.0}}</th>{%endfor%}
+        </tr>
+        {%for values in item.1.rows%}
+        <tr>
+            {%for value in values%}
+            {%if forloop.first%}
+                <td><a href="{{item.1.base_url}}/{{value}}/">{{value}}</a></td>
+            {%else%}
+                <td>{{value}}</td>
+            {%endif%}
+
+            {%endfor%}
+        </tr>
+        {%endfor%}
+    </table>
+    {%endfor%}
+</form>
+
+<script type="text/javascript">
+    $(function(){
+        $("#first_search").attr('class', 'active');
+        {%block jsblock%}
+        $("[name='r']").bootstrapSwitch(
+            {'onText':'精确', 'offText':'模糊', 'offColor':'info'});
+
+        {%if request.GET.r == 'on'%}
+            $("[name='r']").bootstrapSwitch('state', true);
+        {%else%}
+            $("[name='r']").bootstrapSwitch('state', false);
+        {%endif%}
+        {%endblock jsblock%}
+    })
+</script>
+{%endblock main%}

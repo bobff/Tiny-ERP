@@ -1,0 +1,35 @@
+{%extends 'stats/base.html'%}
+{%block stats%}
+<h2>用户满意度调查统计</h2>
+<div >
+            <div id="placeholder" style="width:800px;height:400px;"></div>
+        </div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#stats_eva").attr('class', 'active');
+        var d1 = {{evaluation|safe}};
+
+        $.plot("#placeholder", 
+            [
+              {label:'用户满意度', data:d1, bars: { show: true ,barWidth: 10, align: "center"}},
+            ],
+            {
+                xaxis: {
+                    ticks: {{eva_list|safe}}
+                },
+                yaxis: {
+                    ticks: [0,10,20,30,40,50,60,70,80,90,100],
+                    tickFormatter: function(axis) {
+                        return axis.toString() + '%';
+                    }
+                }
+            }
+            );
+
+        // Add the Flot version string to the footer
+
+        $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+    });
+</script>
+{%endblock stats%}

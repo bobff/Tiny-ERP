@@ -1,0 +1,26 @@
+<tr>
+    <th>UUID</th>
+    <td colspan="4"><a href="http://{{request.META.HTTP_HOST}}{{o.link}}">{{o.uuid}}</a></td>
+</tr>
+<tr>
+    <th>姓名</th>
+    <td colspan="4">{{o.name}}</td>
+</tr>
+<tr>
+    <th>Email</th>
+    <td colspan="4">{{o.email}}</td>
+</tr>
+<tr>
+    <th>部门</th>
+    <td colspan="4">{{o.get_department}}</td>
+</tr>
+<tr>
+    <th>内容</th>
+    <td colspan="4">{{o.content|linebreaksbr|default_if_none:''}}</td>
+</tr>
+{%for a in o.package_set.all%}
+<tr>
+    <th>附加内容{{forloop.counter}}</th>
+    <td colspan="4">{{a.content|default_if_none:''|linebreaksbr}}</td>
+</tr>
+{%endfor%}

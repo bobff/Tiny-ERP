@@ -1,0 +1,84 @@
+{%extends 'apply/allot_base.html'%}
+{%block content%}
+
+     <form role="form"  class="form-horizontal"  method="get" action="">
+        <div class="input-group">
+            <span class="input-group-addon">姓名</span>
+            <input type="text" class="form-control"name="name" value="{{request.GET.name}}" />
+            <span class="input-group-addon">Email</span>
+            <input type="text" class="form-control" name="email" value="{{request.GET.email}}" />
+            <span class="input-group-addon">状态</span>
+            <select name="status" class="form-control" >
+                <option value="">--</option>
+                {%for s in statuslist.items%}
+                <option value="{{s.0}}" {%if request.GET.status == s.0%}selected{%endif%}>{{s.1}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon"></span>
+            <input style="color: #fff;background-color: #3071a9;border-color: #285e8e;" type="submit" class="form-control"class="btn btn-primary" value="筛选"/>
+            <span class="input-group-addon"></span>
+            <input type="button" class="form-control" class="btn btn-primary" value="重置" onclick="javascript:window.location.href='{{request.path}}'" />
+        </div>
+     </form>
+    <table class="table">
+        <tr>
+            <th>姓名</th>
+            <th>Email</th>
+            <th width="100px">申请时间</th>
+            <th>状态</th>
+            <th>分配人</th>
+            <th>执行人</th>
+            <th>执行状态</th>
+            <th>满意度</th>
+            <th></th>
+        </tr>
+        {%for a in p.object_list%}
+        {%if a.task_set.all.count == 0%}
+        <tr>
+            <td>{{a.name}}</td>
+            <td>{{a.email}}</td>
+            <td>{{a.apply_time|date:"Y-m-d H:i:s"}}</td>
+            <td>{{a.get_status}}</td>
+            <td>--</td>
+            <td>--</td>
+            <td>--</td>
+            <td>{{a.get_evaluation}}</td>
+            <td rowspan="1"><button onclick="javascript:window.location.href='/helpdesk/{{apply_category}}/allot/view?uuid={{a.uuid}}'" class="btn btn-info btn-xs">查看</button></td>
+        </tr>
+        {%else%}
+        <tr>
+            <td rowspan="{{a.task_set.all.count}}">{{a.name}}</td>
+            <td rowspan="{{a.task_set.all.count}}">{{a.email}}</td>
+            <td rowspan="{{a.task_set.all.count}}">{{a.apply_time|date:"Y-m-d H:i:s"}}</td>
+            <td rowspan="{{a.task_set.all.count}}">{{a.get_status}}</td>
+            {%for al in a.task_set.all%}
+                {%if not forloop.first%}
+                <tr>
+                {%endif%}
+                <td>{{al.alloter}}</td>
+                <td>{{al.operator}}</td>
+                <td>{{al.get_result}}</td>
+                {%if forloop.first%}
+                <td>{{a.get_evaluation}}</td>
+                <td rowspan="{{a.task_set.all.count}}"><button onclick="javascript:window.location.href='/helpdesk/{{apply_category}}/allot/view?uuid={{a.uuid}}'" class="btn btn-info btn-xs">查看</button></td>
+                {%endif%}
+                </tr>
+        {%endfor%}
+        {%endif%}
+  
+        
+
+        {%endfor%}
+
+    </table>
+
+  {%include 'include/page.html'%} 
+
+    
+
+ <script type="text/javascript">
+  $(function(){
+    $("#third_allot_list").attr('class','active');
+  })
+</script>
+{%endblock%}

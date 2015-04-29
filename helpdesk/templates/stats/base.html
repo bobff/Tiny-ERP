@@ -1,0 +1,28 @@
+{%extends 'base.html'%}
+{%block main%}
+<script src="/site_media/js/jquery.flot.js"></script>
+<script src="/site_media/js/jquery.flot.time.js"></script>
+<div class="row">
+    <div class="col-md-1">
+        <div class="sidebar">
+            <ul class="nav nav-sidebar">
+                <li id="stats_apply"><a href="/helpdesk/stats/apply">申请</a></li>
+                <li id="stats_task"><a href="/helpdesk/stats/task">任务</a></li>
+                <li id="stats_type"><a href="/helpdesk/stats/type">类型</a></li>
+                <li id="stats_eva"><a href="/helpdesk/stats/evaluate">满意度</a></li>
+                <li id="stats_work"><a href="/helpdesk/stats/work">工作统计</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-11">
+    {%block stats%}
+    {%endblock stats%}
+    </div>
+   
+</div>
+<script type="text/javascript">
+    $(function() {
+        $("#first_stats").attr('class', 'active');
+    })
+</script>
+{%endblock main%}

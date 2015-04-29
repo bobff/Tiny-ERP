@@ -1,0 +1,32 @@
+{%if p.has_other_pages%}
+    <ul class="pagination pull-right">
+      {% if p.has_previous %}
+      <li><a href="{{p.link}}{{ p.previous_page_number }}">&laquo;</a></li>
+      {%else%}
+      <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% if p.num_cur_page !=  p.start_page%}
+      <li><a href="{{p.link}}{{p.start_page}}">首页</a></li>
+      {%else%}
+      <li class="disabled"><span>首页</span></li>
+      {%endif%}
+
+       {%for num in p.page_range%}
+       {%if num == p.num_cur_page%}
+      <li class="active"><span>{{num}}</span></li>
+       {%else%}
+      <li><a href="{{p.link}}{{num}}">{{num}}</a></li>
+    {%endif%}
+      {%endfor%}
+
+       {% if p.num_cur_page != p.end_page%}
+      <li><a href="{{p.link}}{{p.end_page}}">末页</a></li>
+       {%else%}
+      <li class="disabled"><span>末页</span></li>
+      {%endif%}
+      {% if p.has_next %}
+      <li><a href="{{p.link}}{{ p.next_page_number }}">&raquo;</a></li>  {%else%}
+      <li class="disabled"><span>&raquo;</span></li>
+       {% endif %}
+    </ul>
+    {%endif%}

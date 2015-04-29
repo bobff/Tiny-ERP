@@ -1,0 +1,43 @@
+{%extends 'stats/work_base.html'%}
+{%block content%}
+
+<h2>
+    <a href="?period={{pre_month|date:'Y-m'}}"><</a>
+    {{this_month|date:'Y年m月'}}
+    <a href="?period={{next_month|date:'Y-m'}}">></a>
+</h2>
+
+
+<table border="1">
+    <tr>
+        <th>姓名</th>
+        <th>数量</th>
+        <th>平均处理时间</th>
+        <th>ID</th>
+        <th>处理时间</th>
+    </tr>
+    {%for t in task.items%}
+    <tr>
+        <td rowspan="{{t.1.count|add:1}}">
+            {{t.1.name}}
+        </td>
+        <td rowspan="{{t.1.count|add:1}}">{{t.1.count}}</td>
+        
+        <td rowspan="{{t.1.count|add:1}}">{{t.1.avg_time|floatformat}}</td>
+    </tr>
+    
+    {%for l in t.1.list%}
+    <tr>
+        <td><a href="/helpdesk/general/allot/view?uuid={{l.uuid.uuid}}">{{l.uuid.uuid}}111</a></td>
+        <td>{{l.handle_time|floatformat}}分</td>
+        <td>{{l}}</td>
+        <td></td>
+    </tr>
+    {%endfor%}
+    {%endfor%}
+</table>
+
+
+
+
+{%endblock content%}

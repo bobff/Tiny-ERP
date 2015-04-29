@@ -1,0 +1,20 @@
+{%extends 'base_allot.html'%}
+{% block right %}
+        <ul class="nav nav-tabs" role="tablist">
+          <li id="third_allot" role="presentation"><a href="/helpdesk/{{apply_category}}/allot">待处理</a></li>
+          <li id="third_allot_list" role="presentation"><a href="/helpdesk/{{apply_category}}/allot/list">列表</a></li>
+        </ul>
+        <script type="text/javascript">
+            $(function(){
+                $("#second_{{apply_category}}").attr('class', 'active');
+            })
+        </script>
+    <br>
+    {%if app.viewer and not app.viewer == request.user.username and app.status == '0'%}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> {{app.viewer}} 已于 {{app.view_time|date:"Y-m-d H:i:s"}} 查看了该申请记录。
+    </div>
+    {%endif%}
+    {%block content%}
+    {%endblock content%}
+{%endblock right%}

@@ -1,0 +1,7 @@
+<uwsgi>  
+    <socket>127.0.0.1:3032</socket>  
+    <chdir>.</chdir>  
+    <pythonpath>.</pythonpath>  
+    <module>wsgi</module>  
+    <daemonize>/var/log/uwsgi/erp.uwsgi.log</daemonize>  
+</uwsgi> 

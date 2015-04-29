@@ -1,0 +1,40 @@
+{%extends 'stats/base.html'%}
+{%block stats%}
+
+<h2>{{days}}天内任务完成数</h2>
+
+<div >
+    <div id="placeholder" style="width:800px;height:400px;"></div>
+</div>
+
+
+<script type="text/javascript">
+    $(function() {
+        $("#stats_task").attr('class', 'active');
+        var d = {{done|safe}};
+        var d1 = [];
+        for (var i in d) {
+            d1.push([new Date(d[i][0]), d[i][1]]);
+        }
+      
+        
+        $.plot("#placeholder", 
+            [
+                {label:'完成任务数', data:d1, lines: { show: true },points: { show: true }}
+                ],
+            {
+                xaxis: {
+                    mode: "time",
+                    timeformat: "%Y-%m-%d",
+                    minTickSize: [1, "day"]
+                }
+            }
+            );
+
+        // Add the Flot version string to the footer
+
+        $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+    });
+</script>
+
+{%endblock stats%}

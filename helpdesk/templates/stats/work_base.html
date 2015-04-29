@@ -1,0 +1,15 @@
+{%extends 'stats/base.html'%}
+{% block stats %}
+ <ul class="nav nav-tabs" role="tablist">
+          <li id="stats_work_task" role="presentation"><a href="/helpdesk/stats/work?type=task&s_year={{request.GET.s_year}}&s_month={{request.GET.s_month}}&e_year={{request.GET.e_year}}&e_month={{request.GET.e_month}}">任务</a></li>
+        </ul>
+       
+    <br>
+    <script type="text/javascript">
+            $(function(){
+                $("#stats_work").attr('class', 'active');
+            })
+        </script>
+    {%block content%}
+    {%endblock content%}
+ {%endblock%}

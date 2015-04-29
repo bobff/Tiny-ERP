@@ -1,0 +1,33 @@
+<style class="fox_global_style">
+    div.fox_html_content { line-height: 1.5; }
+    div.fox_html_content { 
+        font-size: 10.5pt; 
+        font-family: 微软雅黑; 
+        color: rgb(0, 0, 0); 
+        line-height: 1.5; 
+    }
+</style> 
+<div style="text-align: center;">
+    <b><span></span>HelpDesk通知</b>
+</div>
+<div style="text-align: left;">
+    <br>
+</div>
+<div style="text-align: left;">您好：</div>
+<div style="text-align: left;">
+    <span style="background-color: rgba(0, 0, 0, 0);">
+        &nbsp; &nbsp; 您在在HelpDesk系统中提交了一个附加申请，您可以通过UUID <a href="http://{{request.META.HTTP_HOST}}{{o.link}}">{{o.uuid}}</a> 查询处理进度。
+    </span>
+</div>
+<div style="text-align: left;">
+<span style="background-color: rgba(0, 0, 0, 0);"><br></span>
+</div> 
+
+<table align="center" border="1" style="border-collapse: collapse">
+    {%include mail_info%}
+</table>
+<br/>
+
+注：如果点击链接不能正常跳转，请手工复制如下地址进行查询：<br/>
+http://{{request.META.HTTP_HOST}}{{o.link}}
+<br/>

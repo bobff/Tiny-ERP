@@ -1,0 +1,15 @@
+{%extends 'base_task.html'%}
+{% block right %}
+        <ul class="nav nav-tabs" role="tablist">
+          <li id="third_task" role="presentation"><a href="/helpdesk/{{apply_category}}/task">待处理</a></li>
+          <li id="third_task_list" role="presentation"><a href="/helpdesk/{{apply_category}}/task/list">列表</a></li>
+        </ul>
+      <script type="text/javascript">
+		  $(function(){
+		     $("#second_{{apply_category}}").attr('class', 'active');
+		  })
+		</script>
+    <br>
+    {%block content%}
+    {%endblock content%}
+{%endblock right%}

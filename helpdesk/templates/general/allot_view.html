@@ -1,0 +1,71 @@
+{#分配界面，显示申请内容，提供分配操作，显示分配结果#}
+{%extends 'apply/allot_base.html'%}
+{%block content%}
+<div role="form" class="form-horizontal" style="margin-bottom:100px">
+    {%include 'general/info.html'%}
+
+    <div class="form-group">
+        <label for="content"  class="col-sm-2 control-label">分类</label>
+        <div class="col-sm-10">
+            <div class="form-control">
+            {%for t in types.items%}
+                <input id="type_{{t.0}}" type="checkbox" value="{{t.0}}" class="form-control"><span style="margin-right:20px; margin-left:5px;">{{t.1}}</span>
+            {%endfor%}
+            </div>
+        </div>
+    </div>
+                
+    {%if app.package_set.all.count > 0%}
+    <div class="form-group">
+        <label for="content"  class="col-sm-1 control-label"></label>
+        <div class="col-sm-11 ">
+            <div class="alert alert-info" role="alert" style="margin-bottom:0px">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                TIPS：重复指派任务可以通知已完成任务的执行人来处理附加内容。
+            </div>
+        </div>
+    </div>
+    {%endif%}
+
+    {%include 'include/allot_selection.html'%}
+            
+    {% include 'include/allot_evaluation.html'%}
+
+</div>
+
+<script type="text/javascript">
+    
+
+    $(function() {
+        {%for t in type%}
+        $("#type_{{t.type}}").iCheck('check');
+        {%endfor%}
+
+        $('input[id^="type_"]').on('ifChecked', function(event){
+            $.ajax({
+                url: '/helpdesk/apply/ajax_type',
+                type: 'post',
+                data: {'uuid':'{{app.uuid}}', 'type':this.value, 'isadd':1},
+                success: function(data) {
+                    if (data.res == 0) {
+                        alert('保存失败，请稍后重试！');
+                    }
+                }
+            }, 'json');
+        });
+        $('input[id^="type_"]').on('ifUnchecked', function(event){
+            $.ajax({
+                url: '/helpdesk/apply/ajax_type',
+                type: 'post',
+                data: {'uuid':'{{app.uuid}}', 'type':this.value, 'isadd':0},
+                success: function(data) {
+                    if (data.res == 0) {
+                        alert('保存失败，请稍后重试！');
+                    }
+                }
+            }, 'json');
+        });
+
+    });
+</script>
+{%endblock content%}

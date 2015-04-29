@@ -1,0 +1,66 @@
+<style class="fox_global_style">
+    div.fox_html_content { line-height: 1.5; }
+    div.fox_html_content { 
+        font-size: 10.5pt; 
+        font-family: 微软雅黑; 
+        color: rgb(0, 0, 0); 
+        line-height: 1.5; 
+    }
+</style> 
+<div style="text-align: center;">
+    <b><span></span>HelpDesk通知</b>
+</div>
+<div style="text-align: left;">
+    <br>
+</div>
+<div style="text-align: left;">您好：</div>
+<div style="text-align: left;">
+    <span style="background-color: rgba(0, 0, 0, 0);">
+        &nbsp; &nbsp; {% if o.taskobj.alloter_data.user.first_name %}{{o.taskobj.alloter_data.user.first_name}}{%else%}{{o.taskobj.alloter}}{%endif%} 在HelpDesk系统中给你分配了一个新任务, 请尽快进行处理。
+    </span>
+</div>
+<div style="text-align: left;">
+<span style="background-color: rgba(0, 0, 0, 0);"><br></span>
+</div> 
+
+<table align="center" border="1" style="border-collapse: collapse">
+    {%include mail_info %}
+    {%if o.status == '1'%}
+    <tr>
+        <th>驳回理由</th>
+        <td colspan="4">{{o.status_remark|default_if_none:''|linebreaksbr}}</td>
+    </tr>
+    {%endif%}
+{%if o.task_set.all.count > 0%}
+    <tr>
+        <th width="20%">执行人</th>
+        <th width="20%">联系方式</th>
+        <th width="20%">处理结果</th>
+        <th colspan="2">备注</th>
+    </tr>
+    {%for a in o.task_set.all%}
+    <tr>
+        <td>
+            {%if a.operator_data.user.first_name%}{{a.operator_data.user.first_name}}{%else%}{{a.operator}}{%endif%}
+        </td>
+        <td>
+            {{a.operator_data.email}} 
+            {{a.operator_data.phone|default_if_none:''}}
+            {{a.operator_data.mobile|default_if_none:''}}
+        </td>
+        <td>
+            {{a.get_result}}
+        </td>
+        <td colspan="2">
+            {{a.operate_remark|default_if_none:''|linebreaksbr}}
+        </td>
+    </tr>
+    {%endfor%}
+{%endif%}
+
+</table>
+<br/>
+注：如果点击链接不能正常跳转，请手工复制如下地址进行查询：<br/>
+http://{{request.META.HTTP_HOST}}{{o.link}}
+<br/>
+

@@ -1,0 +1,29 @@
+{%extends 'stats/base.html'%}
+{%block stats%}
+<h2>申请类型统计</h2>
+<div >
+            <div id="placeholder" style="width:800px;height:400px;"></div>
+        </div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#stats_type").attr('class', 'active');
+        var d1 = {{count|safe}};
+
+        $.plot("#placeholder", 
+            [
+              {label:'用户满意度', data:d1, bars: { show: true ,barWidth: 10, align: "center"}},
+            ],
+            {
+                xaxis: {
+                    ticks: {{type_list|safe}}
+                }
+            }
+            );
+
+        // Add the Flot version string to the footer
+
+        $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+    });
+</script>
+{%endblock stats%}

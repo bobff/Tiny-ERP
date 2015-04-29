@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TinyERP</title>
+    <!-- Bootstrap -->
+    <link href="/site_media/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/site_media/bootstrap/css/bootstrap-switch.min.css" rel="stylesheet">
+    <script src="/site_media/js/jquery.min.js"></script>
+    <script src="/site_media/bootstrap/js/bootstrap-switch.min.js"></script>
+    <script src="/site_media/js/csrf.js"></script>
+    <link href="/site_media/icheck/square/green.css" rel="stylesheet">
+    <script src="/site_media/icheck/icheck.js"></script>
+    <link type="text/css" href="/site_media/datepicker/datepicker.css" rel="stylesheet" />
+    <script type="text/javascript" src="/site_media/datepicker/bootstrap-datepicker.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <style type="text/css">
+/* Hide for mobile, show later */
+/*.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {*/
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }
+/*}*/
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+</style>
+{%block head%}
+{%endblock head%}
+</head>
+    <body>
+        <div class="navbar  navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">TinyERP</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                {%if is_applicant %}
+                    <li id="first_apply"><a href="/helpdesk/general/apply">我要申请</a></li>
+                {%endif%}
+                {%if is_alloter%}
+                    <li style="width:150px" id="first_allot"><a href="/helpdesk/allot"><span id="span_unallot" class="badge pull-right"></span>用户申请管理</a></li>
+                {%endif%}
+                {%if is_operator%}
+                    <li style="width:115px" id="first_task"><a href="/helpdesk/task"><span id="span_undo" class="badge pull-right"></span>我的任务</a></li>
+                {%endif%}
+                {%if request.user.is_staff == True or is_alloter or is_operator%}
+                    <li id="first_calendar"><a href="/helpdesk/calendar">我的日程</a></li>
+                {%endif%}
+                {%if is_alloter%}
+                    <li id="first_stats"><a href="/helpdesk/stats/apply">统计</a></li>
+                {%endif%}
+                {%if request.user.is_staff == True%}
+                    <li id="first_search"><a href="/helpdesk/search">站内搜索</a></li>
+                    <li><a href="/admin/" target="blank">后台管理</a></li>
+                {%endif%}
+                </ul>
+                <ul class="nav navbar-nav pull-right">
+                    <li id="first_user"> <a href="/helpdesk/user/passwd">{{request.user}}</a></li>
+                    <li class=""> <a href="/accounts/logout/?next=/helpdesk">注销</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+            </div>
+        </div>
+        {%block bigmain%}
+        <div class="jumbotron" style="min-height:800px">
+            <div class="container" >
+            <h1></h1>
+            {%block main%}
+            {%endblock main%}
+            </div>
+        </div>
+        {%endblock bigmain%}
+
+        <div class="footer-bottom">
+            <ul class="list-inline text-center">
+                <li>TinyERP by bobfu@live.cn</li>
+            </ul>
+        </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/site_media/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+var apply_categories = [
+    {%for c in apply_categories%}
+    '{{c.short_tag}}',
+    {%endfor%}    
+]
+    $(function(){
+        {%block jsblock%}
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+            increaseArea: '30%' // optional
+        });
+        {%endblock jsblock%}
+        {%if is_alloter%}
+        try{
+          Notification.requestPermission();
+        } catch (e)  {}
+        var error_count = 0;
+        var handler = function(){
+            $.ajax({
+                url: '/helpdesk/ajax_get_unallot',
+                type: 'post',
+                data: {},
+                success: function(data) {
+                    try{
+                      var notifyed = false;
+                      for (var i in data.uuids) {
+                        if (document.cookie.indexOf("helpdesk_apply_"+data.uuids[i]) < 0) {
+                          if (notifyed == false) {
+                            new Notification('HelpDesk通知',{body:"有一条新申请，快去处理吧!"});
+                            notifyed = true;
+                          }
+                          document.cookie = "helpdesk_apply_"+data.uuids[i] + "=1;path=/";
+                        }
+                      }
+                    }catch(e){}
+                  if (data.count == 0) {
+                    data.count = '';
+                    $("#first_allot").removeAttr('style');
+                    $("#span_unallot").hide();
+                  } else {
+                     $("#first_allot").attr('style','width:150px');
+                      $("#span_unallot").show();
+                  }
+                  $("#span_unallot").html( data.count);
+                    for(var i in apply_categories) {
+                        if (data[apply_categories[i]] > 0) {
+                            $("#span_unallot_"+apply_categories[i]).html( data[apply_categories[i]]); 
+                            $("#span_unallot_"+apply_categories[i]).show();
+                          } else {
+                            $("#span_unallot_"+apply_categories[i]).html('');
+                            $("#span_unallot_"+apply_categories[i]).hide();
+                          }
+                    }
+                },
+                error: function(data) {
+                  if (error_count > 5) {
+                    clearInterval(timer);
+                  } else {
+                    error_count += 1;
+                  }
+                }
+            });
+        }
+        handler();
+        var timer = setInterval( handler , 10000);
+        {%endif%}
+      {%if is_operator%}
+      try{
+      Notification.requestPermission();
+        }catch(e){}
+        var error_count2 = 0;
+        var handler2 = function(){
+            $.ajax({
+                url: '/helpdesk/ajax_get_undo',
+                type: 'post',
+                data: {},
+                success: function(data) {
+                    try{
+                      var notifyed = false;
+                      for (var i in data.uuids) {
+                        if (document.cookie.indexOf("helpdesk_task_"+data.uuids[i]) < 0) {
+                          if (notifyed == false) {
+                            new Notification('HelpDesk通知',{body:"有个新任务，快去处理吧!"});
+                            notifyed = true;
+                          }
+                          document.cookie = "helpdesk_task_"+data.uuids[i] + "=1;path=/";
+                        }
+                      }
+                    }catch(e){}
+                  if (data.count == 0) {
+                    data.count = '';
+                    $("#first_task").removeAttr('style');
+                    $("#span_undo").hide();
+                  } else {
+                    $("#first_task").attr('style', 'width:115px');
+                    $("#span_undo").show();
+                  }
+                  $("#span_undo").html( data.count);
+                  for(var i in apply_categories) {
+                        if (data[apply_categories[i]] > 0) {
+                        $("#span_undo_"+apply_categories[i]).html( data[apply_categories[i]]); 
+                        $("#span_undo_"+apply_categories[i]).show();
+                      } else {
+                        $("#span_undo_"+apply_categories[i]).html('');
+                        $("#span_undo_"+apply_categories[i]).hide();
+                      }
+                    }
+                },
+                error: function(data) {
+                  if (error_count2 > 5) {
+                    clearInterval(timer2);
+                  } else {
+                    error_count2 += 1;
+                  }
+                }
+            });
+        }
+        handler2();
+        var timer2 = setInterval( handler2 , 10000);
+        {%endif%}
+
+        //page
+        var tac =  $('div.tac');  
+            if (tac != undefined) {
+                var page_start = {{p.start_page|default:0}};
+                var page_end = {{p.end_page|default:0}};
+                var page_cur = {{p.num_cur_page|default:0}};                
+                page_button(page_start, page_end, page_cur, "div.tac"); 
+            }
+    });
+
+
+function page_button(page_start, page_end, page_cur, div_insert) { 
+    function print_page(a_str, page, a_class) { 
+        var arch_str = '<a class="fy" onfocus="this.blur();" href=""></a>'; 
+        var $arch = $(arch_str); 
+        $arch.html(a_str); 
+        if (a_class) { 
+            $arch.removeClass('fy'); 
+            $arch.addClass(a_class); 
+        } 
+        var href = $.query.SET('page', page); 
+        $arch.attr("href", href); 
+        $arch.appendTo(div_insert); 
+    }  
+    if (page_start == page_end) { 
+        return; 
+    } 
+    if (page_cur != page_start) { 
+        var a_str = '首页'; 
+        print_page(a_str, page_start); 
+    }  
+    if (page_cur > page_start) { 
+        var a_str = '上一页'; 
+        print_page(a_str, page_cur - 1); 
+    }  
+    var a = [ page_cur]; 
+    while (a.length < 5 && (a[0] > 1 || a[a.length - 1] < page_end)) { 
+        if (a[0] > 1) { 
+            a.unshift(a[0] - 1); 
+        } 
+        if (a[a.length - 1] < page_end) { 
+            a.push(a[a.length - 1] + 1); 
+        } 
+    } 
+    for (var i = 0; i < a.length; i++) { 
+        var a_str = a[i]; 
+        if (a[i] == page_cur) { 
+            print_page(a_str, a[i], "fy2"); 
+        } else { 
+            print_page(a_str, a[i]); 
+        } 
+    } 
+    if (page_cur < page_end) { 
+        var a_str = '下一页'; 
+        print_page(a_str, page_cur + 1); 
+    } 
+    if (page_cur != page_end) { 
+        var a_str = '末页';
+        print_page(a_str, page_end);
+    }
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{%extends 'stats/work_base.html'%}
+{%block content%}
+<form role="form"  class="form-horizontal"  method="get" action="">
+<input type="hidden" name="type" value="task">
+        <div class="input-group">
+            <select class="form-control" name="s_year">
+                {%for year in year_range%}
+                <option value="{{year}}" {%if start_time.0 == year%}selected="selected"{%endif%}>{{year}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon">年</span>
+            <select class="form-control" name="s_month">
+                {%for month in month_range%}
+                <option value="{{month}}" {%if start_time.1 == month%}selected="selected"{%endif%}>{{month}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon">月</span>
+            <span class="input-group-addon">~</span>
+            <select class="form-control" name="e_year">
+                {%for year in year_range%}
+                <option value="{{year}}" {%if end_time.0 == year%}selected="selected"{%endif%}>{{year}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon">年</span>
+            <select class="form-control" name="e_month">
+                {%for month in month_range%}
+                <option value="{{month}}" {%if end_time.1 == month%}selected="selected"{%endif%}>{{month}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon">月</span>
+            <span class="input-group-addon"></span>
+            <input style="color: #fff;background-color: #3071a9;border-color: #285e8e;" type="submit" class="form-control"class="btn btn-primary" value="查询"/>
+            
+        </div>
+     </form>
+<h2>
+    <a href="?type={{type}}&s_year={{pre_start_time.0}}&s_month={{pre_start_time.1}}&e_year={{pre_end_time.0}}&e_month={{pre_end_time.1}}"><</a>
+    {% if start_time.0 == end_time.0 and start_time.1 == end_time.1 %}
+    {{start_time.0}}年{{start_time.1}}月
+    {%else%}
+    {{start_time.0}}年{{start_time.1}}月 - {{end_time.0}}年{{end_time.1}}月
+    {%endif%}
+    <a href="?type={{type}}&s_year={{next_start_time.0}}&s_month={{next_start_time.1}}&e_year={{next_end_time.0}}&e_month={{next_end_time.1}}">></a>
+    <button class="btn btn-info btn-xs" onclick="window.location.href='?type={{request.GET.type}}&s_year={{start_time.0}}&s_month={{start_time.1}}&e_year={{end_time.0}}&e_month={{end_time.1}}&export=csv'">下载</button> 
+</h2>
+
+
+<table border="1" width="1500px">
+    <tr>
+        <th >姓名</th>
+        <th >数量</th>
+        <th >平均响应时间(分钟)</th>
+        <th >平均处理时间(分钟)</th>
+        <th >申请ID</th>
+        <th >响应时间(分钟)</th>
+        <th >处理时间(分钟)</th>
+        <th >分配人</th>
+        <th >分配时间</th>
+        <th >任务查看时间</th>
+        <th >任务完成时间</th>
+        <th >执行结果</th>
+    </tr>
+    {%for t in data.items%}
+    <tr>
+        <td {%if t.1.count > 0%}rowspan="{{t.1.count}}"{%endif%}>{{t.1.name}}</td>
+        <td {%if t.1.count > 0%}rowspan="{{t.1.count}}"{%endif%}>{{t.1.count}}</td>
+        <td {%if t.1.count > 0%}rowspan="{{t.1.count}}"{%endif%}>{{t.1.avg_resp|floatformat}}</td>
+        <td {%if t.1.count > 0%}rowspan="{{t.1.count}}"{%endif%}>{{t.1.avg_hand|floatformat}}</td>
+    {%if t.1.count == 0%}
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {%endif%}
+
+    {%for l in t.1.list%}
+    {%if forloop.counter > 1%}
+    <tr>
+    {%endif%}
+        <td><a target="_blank" href="/helpdesk/apply/query?uuid={{l.uuid.uuid}}">{{l.uuid.uuid}}</a></td>
+        <td>{{l.response_time|floatformat}}</td>
+        <td>{{l.handle_time|floatformat}}</td>
+        <td>{{l.alloter}}</td>
+        <td>{{l.allot_time|date:'Y-m-d H:i:s'}}</td>
+        <td>{{l.view_time|date:'Y-m-d H:i:s'}}</td>
+        <td>{{l.operate_time|date:'Y-m-d H:i:s'}}</td>
+        <td>{{l.get_result}}</td>
+    </tr>
+    {%endfor%}
+    {%endfor%}
+</table>
+
+
+
+    <script type="text/javascript">
+            $(function(){
+                $("#stats_work_task").attr('class', 'active');
+            })
+        </script>
+{%endblock content%}

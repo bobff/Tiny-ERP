@@ -1,0 +1,66 @@
+{%extends 'apply/task_base.html'%}
+{%block content%}
+
+     <form role="form"  class="form-horizontal"  method="get" action="">
+        <div class="input-group">
+            <span class="input-group-addon">姓名</span>
+            <input type="text" class="form-control"name="name" value="{{request.GET.name}}" />
+            <span class="input-group-addon">Email</span>
+            <input type="text" class="form-control" name="email" value="{{request.GET.email}}" />
+            <span class="input-group-addon">类型</span>
+            <select name="duty" class="form-control" >
+                <option value="">--</option>
+                {%for s in duty_list.items%}
+                <option value="{{s.0}}" {%if request.GET.duty == s.0%}selected{%endif%}>{{s.1}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon">状态</span>
+            <select name="result" class="form-control" >
+                <option value="">--</option>
+                {%for s in result_list.items%}
+                <option value="{{s.0}}" {%if request.GET.result == s.0%}selected{%endif%}>{{s.1}}</option>
+                {%endfor%}
+            </select>
+            <span class="input-group-addon"></span>
+            <input style="color: #fff;background-color: #3071a9;border-color: #285e8e;" type="submit" class="form-control"class="btn btn-primary" value="筛选"/>
+            <span class="input-group-addon"></span>
+            <input type="button" class="form-control" class="btn btn-primary" value="重置" onclick="javascript:window.location.href='{{request.path}}'" />
+        </div>
+     </form>
+    <table class="table">
+        <tr>
+            <th>姓名</th>
+            <th>Email</th>
+            <th>申请时间</th>
+            <th>请求状态</th>
+            <th>分配人</th>
+            <th>类型</th>
+            <th>任务状态</th>
+            <th></th>
+        </tr>
+    {%for a in p.object_list%}
+        <tr>
+        <td>{{a.uuid.name}}</td>
+        <td>{{a.uuid.email}}</td>
+        <td>{{a.uuid.apply_time|date:"Y-m-d H:i:s"}}</td>
+        <td>{{a.uuid.get_status}}</td>
+        <td>{{a.alloter}}</td>
+        <td>{{a.get_operator_duty}}</td>
+        <td>{{a.get_result}}</td>
+        <td><button class="btn btn-xs btn-info" onclick="javascript:window.location.href='/helpdesk/{{apply_category}}/task/view?id={{a.pk}}'">查看</button></td>
+        </tr>
+  
+        
+
+    {%endfor%}
+
+    </table>
+
+    {%include 'include/page.html'%}
+
+<script type="text/javascript">
+    $(function(){
+        $("#third_task_list").attr('class', 'active');
+    })
+</script>
+{%endblock%}

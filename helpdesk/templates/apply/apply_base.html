@@ -1,0 +1,17 @@
+{%extends 'base_apply.html'%}
+{% block right %}
+ <ul class="nav nav-tabs" role="tablist">
+            <li id="third_apply"><a href="/helpdesk/{% if request.GET.c %}{{request.GET.c}}{%elif apply_category == 'apply'%}general{%else%}{{apply_category}}{%endif%}/apply">申请</a></li>
+            <li id="third_query"><a href="/helpdesk/apply/query?c={%if request.GET.c%}{{request.GET.c}}{%elif apply_category == 'apply'%}general{%else%}{{apply_category}}{%endif%}">查询</a></li>
+            <li id="third_history"><a href="/helpdesk/apply/history?c={%if request.GET.c%}{{request.GET.c}}{%elif apply_category == 'apply'%}general{%else%}{{apply_category}}{%endif%}">历史记录</a></li>
+        </ul>
+       
+    <br>
+    <script type="text/javascript">
+            $(function(){
+                $("#second_{{apply_category}}").attr('class', 'active');
+            })
+        </script>
+    {%block content%}
+    {%endblock content%}
+ {%endblock%}
